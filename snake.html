@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Snake</title>
+</head>
+
+<body>
+    <style>
+        :root {
+            --colNum: 20;
+            --rowNum: 20;
+        }
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+        }
+
+        .cells {
+            display: grid;
+            grid-template-columns: repeat(var(--colNum), 20px);
+            grid-template-rows: repeat(var(--rowNum), 20px);
+        }
+
+        .cell {
+            border: 1px solid black;
+            /* border-radius: .5rem; */
+            font-size: 10px;
+            text-align: center;
+            color: black;
+            background: rgba(240, 236, 236, 0.4);
+        }
+
+        .snake {
+            background-color: black;
+        }
+    </style>
+    <div class="cells">
+
+    </div>
+    <script>
+        let columns = 20
+        let rows = 20
+        const numberOfCell = new Array(columns * rows)
+        let snakeLength = 1
+
+        const board = []
+        const cells = document.querySelector('.cells')
+        window.addEventListener('keyup', move)
+
+        for (let i = 0; i < numberOfCell.length; i++) {
+            board.push(`<div data-cell="${i}" class="cell"></div>`)
+        }
+
+        cells.innerHTML = board.join('')
+        const mapCells = Array.from(document.querySelectorAll('.cell'))
+        const start = mapCells.find(cell => {
+            return (parseInt(cell.dataset.cell) === 189)
+        })
+        start.classList.add('snake')
+        let lastPosition = parseInt(start.dataset.cell)
+        function move(e) {
+            let current = start
+            let lastMove = start
+            let baitPosition = Math.random() * (numberOfCell.length - 1) + 1
+            let bait = mapCells.find(cell => {
+                return (parseInt(cell.dataset.cell) === baitPosition)
+            })
+            if (e.keyCode === 37) {
+                lastMove = mapCells.find(cell => {
+                    return (parseInt(cell.dataset.cell) === lastPosition)
+                })
+                lastPosition -= 1
+                console.log(lastMove)
+                current = mapCells.find(cell => {
+                    return (parseInt(cell.dataset.cell) === lastPosition)
+                })
+                current.classList.add('snake')
+                lastMove.classList.remove('snake')
+                start.classList.remove('snake')
+            }
+            console.log(current)
+            if (e.keyCode === 38) {
+                lastMove = mapCells.find(cell => {
+                    return (parseInt(cell.dataset.cell) === lastPosition)
+                })
+                lastPosition -= 20
+                current = mapCells.find(cell => {
+                    return (parseInt(cell.dataset.cell) === lastPosition)
+                })
+                current.classList.add('snake')
+                lastMove.classList.remove('snake')
+                start.classList.remove('snake')
+            }
+            if (e.keyCode === 39) {
+                lastMove = mapCells.find(cell => {
+                    return (parseInt(cell.dataset.cell) === lastPosition)
+                })
+                lastPosition += 1
+                current = mapCells.find(cell => {
+                    return (parseInt(cell.dataset.cell) === lastPosition)
+                })
+                current.classList.add('snake')
+                lastMove.classList.remove('snake')
+                start.classList.remove('snake')
+            }
+            if (e.keyCode === 40) {
+                lastMove = mapCells.find(cell => {
+                    return (parseInt(cell.dataset.cell) === lastPosition)
+                })
+                lastPosition += 20
+                current = mapCells.find(cell => {
+                    return (parseInt(cell.dataset.cell) === lastPosition)
+                })
+                current.classList.add('snake')
+                lastMove.classList.remove('snake')
+                start.classList.remove('snake')
+            }
+
+        }
+    </script>
+</body>
+
+</html>

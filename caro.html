@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Caro</title>
+</head>
+
+<body>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+        }
+
+        .cells {
+            /* display: flex;
+            flex: 1;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center; */
+            display: grid;
+            grid-template-columns: 200px 200px 200px;
+            grid-template-rows: 200px 200px 200px;
+        }
+
+        .cell {
+            border: 2px solid black;
+            border-radius: .5rem;
+            margin: 1rem;
+            font-size: 3.5rem;
+            padding: 3rem .5rem;
+            transition: all .07s ease;
+            text-align: center;
+            color: white;
+            background: rgba(0, 0, 0, 0.4);
+            text-shadow: 0 0 .5rem black;
+        }
+
+        .result {
+            text-align: center;
+            color: blue;
+            display: block;
+        }
+    </style>
+    <input type="text" placeholder="row">
+    <input type="text" placeholder="cell to win">
+    <button>OK</button>
+    <div class="cells">
+        <div data-cell="0" class="cell"></div>
+        <div data-cell="1" class="cell"></div>
+        <div data-cell="2" class="cell"></div>
+        <div data-cell="3" class="cell"></div>
+        <div data-cell="4" class="cell"></div>
+        <div data-cell="5" class="cell"></div>
+        <div data-cell="6" class="cell"></div>
+        <div data-cell="7" class="cell"></div>
+        <div data-cell="8" class="cell"></div>
+    </div>
+    <button class="btnReset">RESET</button>
+    <h1 class="result"></h1>
+    <script>
+        const cells = Array.from(document.querySelectorAll('.cell'))
+        const cellStyle = document.querySelector('.cells')
+        const btnReset = document.querySelector('.btnReset')
+        btnReset.addEventListener('click', resetBoard)
+        cells.forEach(cell => {
+            cell.addEventListener('click', checkCell, { once: true })
+        })
+
+        let check = false
+        const keyX = 'X'
+        const keyO = 'O'
+        let count = 0
+        const result = (new Array(cells.length)).fill('')
+        function checkCell() {
+            if (check === false) {
+                this.textContent = keyX
+                // console.log(this.dataset.cell)
+                check = !check
+                count++
+            } else {
+                this.textContent = keyO
+                check = !check
+                count++
+            }
+            result[(this.dataset.cell)] = this.textContent
+            // console.log(result)
+            // if (count === 9) done()
+            checkWin()
+
+        }
+
+        function checkWin() {
+            let win = false
+            let showResult = []
+            let checkWin
+            // check row
+            for (let i = 0; i < result.length; i++) {
+                checkWin = result[i].concat(result[i + 1], result[i + 2])
+                if (checkWin.includes('XXX') || checkWin.includes('OOO')) {
+                    win = true
+                }
+                if (win) {
+                    showResult.push(i, i + 1, i + 2)
+                    break
+                }
+                i += 2
+            }
+
+            // check column
+            for (let i = 0; i < result.length; i++) {
+                checkWin = result[i].concat(result[i + 3], result[i + 6])
+                if (checkWin.includes('XXX') || checkWin.includes('OOO')) {
+                    win = true
+                    if (win) {
+                        showResult.push(i, i + 3, i + 6)
+                        break
+                    }
+                }
+
+            }
+
+            if (!win) {
+                checkWin = result[0].concat(result[4], result[8])
+                if (checkWin.includes('XXX') || checkWin.includes('OOO')) {
+                    win = true
+                    if (win) {
+                        showResult.push(0, 4, 8)
+                    }
+                }
+            }
+            if (!win) {
+                checkWin = result[2].concat(result[4], result[6])
+                if (checkWin.includes('XXX') || checkWin.includes('OOO')) {
+                    win = true
+                    if (win) {
+                        showResult.push(2, 4, 6)
+                    }
+                }
+            }
+
+            if (win) {
+                showResult.map(parseInt)
+                cells.forEach(ele => {
+                    for (let i of showResult) {
+                        if (i === parseInt(ele.dataset.cell)) {
+                            ele.style.color = 'red'
+                        }
+                    }
+                })
+                document.querySelector('.result').textContent = `WIN`
+            }
+        }
+        function resetBoard() {
+            cells.map(ele => {
+                return ele.textContent = ''
+            })
+            cells.forEach(cell => {
+                cell.addEventListener('click', checkCell, { once: true })
+            })
+        }
+    </script>
+</body>
+
+</html>
